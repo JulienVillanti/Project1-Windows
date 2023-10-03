@@ -24,6 +24,15 @@ public class Store4 {
         return false;
     }
 
+    public static boolean isInventoryEmpty(Computer[] inventory) {
+        for (int i = 0; i < inventory.length; i++) {
+            if (inventory[i] != null) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public static void findComputersByBrand(Computer[] inventory, String brandSearch) {
         boolean foundBrand = false;
         for (int i = 0; i < inventory.length; i++) {
@@ -34,7 +43,7 @@ public class Store4 {
         }
         if (!foundBrand) {
             System.out.println("No computers with the brand '" + brandSearch + "' found in the inventory.");
-        } else {
+        } else if (isInventoryEmpty(inventory)) {
             System.out.println("Your inventory is empty!");
         }
     }
@@ -62,13 +71,9 @@ public class Store4 {
             System.out.println("Please enter the maximum price: ");
         }
     }
-        /*if (!foundPrice) {
-            System.out.println("There is no computers available under that price.");
-        } else - if (inventory[i] == null) {
-            System.out.println("Your inventory is empty!");
-        }*/
 
     public static void displayComputerInfo(Computer computer) {
+        System.out.println("Here are the information of your computer: ");
         System.out.print("Brand: " + computer.getBrand() + " ");
         System.out.print("Model: " + computer.getModel() + " ");
         System.out.print("Price: $" + computer.getPrice() + " ");
@@ -132,15 +137,18 @@ public class Store4 {
                                 }
                             }
 
+
                             if (compuNum + numOfComputers - 1 <= maxComputers) {
                                 if (numOfComputers <= freeInventorySpots) {
                                     while (numOfComputers > 0) {
-                                        System.out.println("Computer # " + compuNum);
+                                        System.out.print("Computer # " + compuNum);
+                                        System.out.println();
                                         kb.nextLine();
-
-                                        System.out.println("Brand: ");
+                                        System.out.print("Brand: ");
+                                        System.out.println();
                                         String brand = kb.nextLine();
-                                        System.out.println("Model: ");
+                                        System.out.print("Model: ");
+                                        System.out.println();
                                         String model = kb.nextLine();
                                         double price;
 
@@ -171,70 +179,81 @@ public class Store4 {
 
                 case 2:
                     if (checkPassword(PASSWORD)) {
-                        System.out.println("Which computer would you like to update?");
-                        int updateComputer = kb.nextInt();
+                        boolean backToMenu = false;
+                        while (!backToMenu) {
+                            System.out.println("Which computer would you like to update?");
+                            int updateComputer = kb.nextInt();
 
-                        if (updateComputer < 1 || updateComputer > compuNum || inventory[updateComputer - 1] == null) {
-                            System.out.println("The selected computer cannot be found. Would you like to try another computer? (Y/N)");
-                            String answer = kb.next();
-                            if (!answer.equalsIgnoreCase("Y")) {
-                                return;
+                            if (updateComputer == 0) {
+                                break;
                             }
-                        } else {
-                            Computer computer = inventory[updateComputer - 1];
-                            displayComputerInfo(computer);
 
-                            do {
-                                System.out.println("""
-                                        What information would you like to change?
-                                        1. Brand
-                                        2. Model
-                                        3. Serial Number
-                                        4. Price
-                                        5. Quit
-                                        Enter your choice:
-                                        """);
-                                int choiceMenu2 = 0;
-                                try {
-                                    choiceMenu2 = kb.nextInt();
-                                } catch (InputMismatchException e) {
-                                    System.out.println("Invalid, you cannot enter a letter! Please select one of the choices from the menu.");
-                                    kb.nextLine();
+                            if (updateComputer < 1 || updateComputer > compuNum || inventory[updateComputer - 1] == null) {
+                                System.out.println("The selected computer cannot be found. Would you like to try another computer? (Y/N)");
+                                String answer = kb.next();
+                                if (answer.equalsIgnoreCase("N")) {
+                                    break;
                                 }
-                                //int choiceMenu2 = kb.nextInt();
+                            } else {
+                                Computer computer = inventory[updateComputer - 1];
+                                displayComputerInfo(computer);
 
-                                switch (choiceMenu2) {
-                                    case 1:
-                                        System.out.println("Enter the updated brand: ");
+                                while (true) {//do{
+                                    System.out.println("""
+                                            What information would you like to change?
+                                            1. Brand
+                                            2. Model
+                                            3. Serial Number
+                                            4. Price
+                                            5. Quit(Back to Main Menu)
+                                            Enter your choice:
+                                            """);
+
+                                    int choiceMenu2 = 0;
+                                    try {
+                                        choiceMenu2 = kb.nextInt();
+                                    } catch (InputMismatchException e) {
+                                        System.out.println("Invalid, you cannot enter a letter! Please select one of the choices from the menu.");
                                         kb.nextLine();
-                                        String brand = kb.nextLine();
-                                        computer.setBrand(brand);
+                                    }
+                                    //int choiceMenu2 = kb.nextInt();
+
+                                    switch (choiceMenu2) {
+                                        case 1:
+                                            System.out.println("Enter the updated brand: ");
+                                            kb.nextLine();
+                                            String brand = kb.nextLine();
+                                            computer.setBrand(brand);
+                                            break;
+                                        case 2:
+                                            System.out.println("Enter the updated model: ");
+                                            kb.nextLine();
+                                            String model = kb.nextLine();
+                                            computer.setModel(model);
+                                            break;
+                                        case 3:
+                                            System.out.println("Enter the updated serial number: ");
+                                            long serialNum = kb.nextLong();
+                                            computer.setSerialNumber(serialNum);
+                                            break;
+                                        case 4:
+                                            System.out.println("Enter the updated price: ");
+                                            double price = kb.nextDouble();
+                                            computer.setPrice(price);
+                                            break;
+                                        case 5:
+                                            System.out.println("Thank you!");
+                                            backToMenu = true;
+                                            break;
+                                    }
+                                    if (backToMenu) {
                                         break;
-                                    case 2:
-                                        System.out.println("Enter the updated model: ");
-                                        kb.nextLine();
-                                        String model = kb.nextLine();
-                                        computer.setModel(model);
-                                        break;
-                                    case 3:
-                                        System.out.println("Enter the updated serial number: ");
-                                        long serialNum = kb.nextLong();
-                                        computer.setSerialNumber(serialNum);
-                                        break;
-                                    case 4:
-                                        System.out.println("Enter the updated price: ");
-                                        double price = kb.nextDouble();
-                                        computer.setPrice(price);
-                                        break;
-                                    case 5:
-                                        System.out.println("Thank you!");
-                                        return;
+                                    }
                                 }
-                            } while (true);
+                            }
                         }
                     }
                     break;
-
                 case 3:
                     System.out.println("Please enter the brand of the computer you would like to search for: ");
                     String brandSearch = kb.next();
