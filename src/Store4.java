@@ -51,29 +51,29 @@ public class Store4 {
     public static void findCheaperThan(Computer[] inventory, double checkPrice) {
         boolean foundPrice = false;
         boolean hasComputers = false;
+
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] != null && inventory[i].getPrice() < checkPrice) {
                 displayComputerInfo(inventory[i]);
                 foundPrice = true;
+            }
+            if (inventory[i] != null) {
                 hasComputers = true;
             }
         }
 
         if (!hasComputers) {
             System.out.println("Your inventory is empty!");
-            return; // Exit the method if the inventory is empty
-        }
-
-        if (!foundPrice) {
+        } else if (!foundPrice) {
             System.out.println("There are no computers available under that price.");
         } else {
-            // Prompt the user to enter the price
+            // Ask the user for the maximum price they would like to search for
             System.out.println("Please enter the maximum price: ");
         }
     }
 
+
     public static void displayComputerInfo(Computer computer) {
-        System.out.println("Here are the information of your computer: ");
         System.out.print("Brand: " + computer.getBrand() + " ");
         System.out.print("Model: " + computer.getModel() + " ");
         System.out.print("Price: $" + computer.getPrice() + " ");
@@ -261,9 +261,10 @@ public class Store4 {
                     break;
 
                 case 4:
-                    System.out.println("Please enter the maximum price: ");
-                    double checkPrice = kb.nextDouble();
+                   //System.out.println("Please enter the maximum price: ");
+                    double checkPrice = 0;
                     findCheaperThan(inventory, checkPrice);
+                    checkPrice = kb.nextDouble();
                     break;
 
                 case 5:
