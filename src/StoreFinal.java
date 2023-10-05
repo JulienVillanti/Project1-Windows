@@ -9,12 +9,12 @@
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
-public class Store4 {
+public class StoreFinal {
     private static final String PASSWORD = "password";
     private static final int MAX_ATTEMPTS = 3;
 
     //-----------------PASSWORD CHECK Method
-    // We will be using this check twice in the program, in the menu option 1 and 2
+// We will be using this check twice in the program, in the menu option 1 and 2
     public static boolean checkPassword(String pass) {
         Scanner kb = new Scanner(System.in);
         int passwordAttempts = 0;
@@ -34,6 +34,7 @@ public class Store4 {
         return false;
     }
 
+    //This method will help us verify is the inventory is empty for the last 2 choices of the menu
     public static boolean isInventoryEmpty(Computer[] inventory) {
         for (int i = 0; i < inventory.length; i++) {
             if (inventory[i] != null) {
@@ -41,6 +42,12 @@ public class Store4 {
             }
         }
         return true;
+    }
+
+    // This method will be used to display the information of the computers
+    public static void displayComputerInfo(Computer computer) {
+        System.out.printf("Brand: %s Model: %s Price: $%.2f Serial Number: %d%n",
+                computer.getBrand(), computer.getModel(), computer.getPrice(), computer.getSerialNumber());
     }
 
     public static void findComputersByBrand(Computer[] inventory, String brandSearch) {
@@ -75,17 +82,10 @@ public class Store4 {
             System.out.println("Your inventory is empty!");
         } else if (!foundPrice) {
             System.out.println("There are no computers available under that price.");
-        } else {
-            System.out.println("The price cannot be negative, please enter the price again: ");
+            if (checkPrice < 0) {
+                System.out.println("The price cannot be negative, please enter the price again: ");
+            }
         }
-    }
-    //else {
-// Ask the user for the maximum price they would like to search for
-//System.out.println("Please enter the maximum price: ");
-
-    public static void displayComputerInfo(Computer computer) {
-        System.out.printf("Brand: %s Model: %s Price: $%.2f Serial Number: %d%n",
-                computer.getBrand(), computer.getModel(), computer.getPrice(), computer.getSerialNumber());
     }
 
     public static void main(String[] args) {
@@ -104,6 +104,7 @@ public class Store4 {
 
         Computer[] inventory = new Computer[maxComputers];
 
+        //Creating the main menu
         do {
             System.out.println("""
                     What would you like to do?
@@ -128,6 +129,7 @@ public class Store4 {
                             int numOfComputers = kb.nextInt();
 
                             if (numOfComputers == 0) {
+
                                 break; // Exit the "add computers" section
                             }
 
@@ -136,7 +138,7 @@ public class Store4 {
                                 numOfComputers = kb.nextInt();
                             }
 
-                            int freeInventorySpots = 0; // Initialize outside the loop
+                            int freeInventorySpots = 0;
 
                             for (int i = 0; i < inventory.length; i++) {
                                 if (inventory[i] == null) {
@@ -147,10 +149,8 @@ public class Store4 {
 
                             if (compuNum + numOfComputers - 1 <= maxComputers) {
                                 if (numOfComputers <= freeInventorySpots) {
-                                    for (int i = 0; i < numOfComputers; i++) {
+                                    while (numOfComputers > 0) {
                                         System.out.println("Computer # " + compuNum);
-                                        // System.out.print("Computer # " + compuNum);
-                                        // System.out.println();
                                         kb.nextLine();
                                         System.out.print("Brand: ");
                                         System.out.println();
@@ -175,16 +175,15 @@ public class Store4 {
                                     }
 
                                     System.out.println("Computers added to the inventory.");
-                                } /*else {
-                                    System.out.println("There is not enough space to add that many computers. You can only add " + freeInventorySpots + " computers to the list.");
-                                }*/
+                                } else {
+                                    System.out.println("There is not enough space to add that many computers. You can only add " + freeInventorySpots + " more computers to the list.");
+                                }
                             } else {
-                                System.out.println("There is not enough space to add that many computers. You can only add " + (maxComputers - compuNum + 1) + " computers to the list.");
+                                System.out.println("There is not enough space to add that many computers. You can only add " + (maxComputers - compuNum + 1) + " more computers to the list.");
                             }
                         }
                     }
                     break;
-
                 case 2:
                     if (checkPassword(PASSWORD)) {
                         boolean backToMenu = false;
@@ -205,15 +204,15 @@ public class Store4 {
                             } else {
                                 Computer computer = inventory[updateComputer - 1];
                                 displayComputerInfo(computer);
-
-                                do {//do{
+                                //Creating the sub-menu to modify computers specs
+                                do {
                                     System.out.println("""
                                             What information would you like to change?
                                             1. Brand
                                             2. Model
                                             3. Serial Number
                                             4. Price
-                                            5. Quit(Back to Main Menu)
+                                            5. (Back to Main Menu)
                                             Enter your choice:
                                             """);
 
@@ -224,8 +223,6 @@ public class Store4 {
                                         System.out.println("Invalid, you cannot enter a letter! Please select one of the choices from the menu.");
                                         kb.nextLine();
                                     }
-                                    //int choiceMenu2 = kb.nextInt();
-
                                     switch (choiceMenu2) {
                                         case 1:
                                             System.out.println("Enter the updated brand: ");
@@ -257,19 +254,8 @@ public class Store4 {
                                                 }
                                             }
                                             break;
-                                            /*do {
-                                                System.out.println("Enter the updated price: ");
-                                                double price = kb.nextDouble();
-                                                if (price < 0) {
-                                                    System.out.println("Your price cannot be negative, please enter another price!");
-                                                    break;
-                                                }
-                                                computer.setPrice(price);
-                                            }
-                                            while(price < 0 );
-                                            break;*/
                                         case 5:
-                                            System.out.println("Thank you!");
+                                            System.out.println("Returning to main menu!");
                                             backToMenu = true;
                                             break;
                                     }
@@ -285,12 +271,25 @@ public class Store4 {
                     break;
 
                 case 4:
-                    System.out.println("Please enter the maximum price: ");
-                    double checkPrice = kb.nextDouble();
-                    //double checkPrice = 0;
-                    findCheaperThan(inventory, checkPrice);
+                    boolean validPrice = false;
+                    while (!validPrice) {
+                        System.out.println("Please enter the maximum price: ");
+                        double checkPrice = kb.nextDouble();
+
+                        if (checkPrice >= 0) {
+                            findCheaperThan(inventory, checkPrice);
+                            validPrice = true;
+                        } else {
+                            System.out.println("The price cannot be negative!");
+                        }
+                    }
+
+                    if (!validPrice) {
+                        System.out.println("No valid price entered. Returning to the main menu.");
+                    }
 
                     break;
+
 
                 case 5:
                     System.out.println("Thank you for using the program. Goodbye!");
@@ -305,3 +304,4 @@ public class Store4 {
         } while (true);
     }
 }
+
